@@ -69,7 +69,7 @@ const filteredMainSettings = (
   return main;
 };
 
-settingsRoutes.get('/main', (req, res, next) => {
+settingsRoutes.get('/main', isAuthenticated(Permission.ADMIN), (req, res, next) => {
   const settings = getSettings();
 
   if (!req.user) {
@@ -79,7 +79,7 @@ settingsRoutes.get('/main', (req, res, next) => {
   res.status(200).json(filteredMainSettings(req.user, settings.main));
 });
 
-settingsRoutes.post('/main', async (req, res) => {
+settingsRoutes.post('/main', isAuthenticated(Permission.ADMIN), async (req, res) => {
   const settings = getSettings();
 
   settings.main = merge(settings.main, req.body);
@@ -88,13 +88,13 @@ settingsRoutes.post('/main', async (req, res) => {
   return res.status(200).json(settings.main);
 });
 
-settingsRoutes.get('/network', (req, res) => {
+settingsRoutes.get('/network', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), (req, res) => {
   const settings = getSettings();
 
   res.status(200).json(settings.network);
 });
 
-settingsRoutes.post('/network', async (req, res) => {
+settingsRoutes.post('/network', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), async (req, res) => {
   const settings = getSettings();
 
   settings.network = merge(settings.network, req.body);
@@ -103,7 +103,7 @@ settingsRoutes.post('/network', async (req, res) => {
   return res.status(200).json(settings.network);
 });
 
-settingsRoutes.post('/main/regenerate', async (req, res, next) => {
+settingsRoutes.post('/main/regenerate', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), async (req, res, next) => {
   const settings = getSettings();
 
   const main = await settings.regenerateApiKey();
@@ -115,13 +115,13 @@ settingsRoutes.post('/main/regenerate', async (req, res, next) => {
   return res.status(200).json(filteredMainSettings(req.user, main));
 });
 
-settingsRoutes.get('/plex', (_req, res) => {
+settingsRoutes.get('/plex', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), (_req, res) => {
   const settings = getSettings();
 
   res.status(200).json(settings.plex);
 });
 
-settingsRoutes.post('/plex', async (req, res, next) => {
+settingsRoutes.post('/plex', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), async (req, res, next) => {
   const userRepository = getRepository(User);
   const settings = getSettings();
   try {
@@ -235,13 +235,13 @@ settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
   }
 });
 
-settingsRoutes.get('/plex/library', (_req, res) => {
+settingsRoutes.get('/plex/library', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), (_req, res) => {
   const settings = getSettings();
 
   return res.status(200).json(settings.plex.libraries);
 });
 
-settingsRoutes.put('/plex/library/:libraryId', async (req, res, next) => {
+settingsRoutes.put('/plex/library/:libraryId', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), async (req, res, next) => {
   const settings = getSettings();
 
   const bodyResult = libraryUpdateSchema.safeParse(req.body);
@@ -264,7 +264,7 @@ settingsRoutes.put('/plex/library/:libraryId', async (req, res, next) => {
   return res.status(200).json(library);
 });
 
-settingsRoutes.post('/plex/library/sync', async (_req, res, next) => {
+settingsRoutes.post('/plex/library/sync', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), async (_req, res, next) => {
   const settings = getSettings();
 
   const userRepository = getRepository(User);
@@ -286,11 +286,11 @@ settingsRoutes.post('/plex/library/sync', async (_req, res, next) => {
   return res.status(200).json(settings.plex.libraries);
 });
 
-settingsRoutes.get('/plex/sync', (_req, res) => {
+settingsRoutes.get('/plex/sync', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), (_req, res) => {
   return res.status(200).json(plexFullScanner.status());
 });
 
-settingsRoutes.post('/plex/sync', (req, res) => {
+settingsRoutes.post('/plex/sync', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), (req, res) => {
   if (req.body.cancel) {
     plexFullScanner.cancel();
   } else if (req.body.start) {
@@ -299,13 +299,13 @@ settingsRoutes.post('/plex/sync', (req, res) => {
   return res.status(200).json(plexFullScanner.status());
 });
 
-settingsRoutes.get('/jellyfin', (_req, res) => {
+settingsRoutes.get('/jellyfin', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), (_req, res) => {
   const settings = getSettings();
 
   res.status(200).json(settings.jellyfin);
 });
 
-settingsRoutes.post('/jellyfin', async (req, res, next) => {
+settingsRoutes.post('/jellyfin', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), async (req, res, next) => {
   const userRepository = getRepository(User);
   const settings = getSettings();
 
@@ -362,13 +362,13 @@ settingsRoutes.post('/jellyfin', async (req, res, next) => {
   return res.status(200).json(settings.jellyfin);
 });
 
-settingsRoutes.get('/jellyfin/library', (_req, res) => {
+settingsRoutes.get('/jellyfin/library', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), (_req, res) => {
   const settings = getSettings();
 
   return res.status(200).json(settings.jellyfin.libraries);
 });
 
-settingsRoutes.put('/jellyfin/library/:libraryId', async (req, res, next) => {
+settingsRoutes.put('/jellyfin/library/:libraryId', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), async (req, res, next) => {
   const settings = getSettings();
 
   const bodyResult = libraryUpdateSchema.safeParse(req.body);
@@ -391,7 +391,7 @@ settingsRoutes.put('/jellyfin/library/:libraryId', async (req, res, next) => {
   return res.status(200).json(library);
 });
 
-settingsRoutes.post('/jellyfin/library/sync', async (_req, res, next) => {
+settingsRoutes.post('/jellyfin/library/sync', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), async (_req, res, next) => {
   const settings = getSettings();
 
   const userRepository = getRepository(User);
@@ -455,7 +455,7 @@ settingsRoutes.post('/jellyfin/library/sync', async (_req, res, next) => {
   return res.status(200).json(settings.jellyfin.libraries);
 });
 
-settingsRoutes.get('/jellyfin/users', async (req, res) => {
+settingsRoutes.get('/jellyfin/users', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), async (req, res) => {
   const settings = getSettings();
 
   const userRepository = getRepository(User);
@@ -482,11 +482,11 @@ settingsRoutes.get('/jellyfin/users', async (req, res) => {
   return res.status(200).json(users);
 });
 
-settingsRoutes.get('/jellyfin/sync', (_req, res) => {
+settingsRoutes.get('/jellyfin/sync', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), (_req, res) => {
   return res.status(200).json(jellyfinFullScanner.status());
 });
 
-settingsRoutes.post('/jellyfin/sync', (req, res) => {
+settingsRoutes.post('/jellyfin/sync', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), (req, res) => {
   if (req.body.cancel) {
     jellyfinFullScanner.cancel();
   } else if (req.body.start) {
@@ -494,13 +494,13 @@ settingsRoutes.post('/jellyfin/sync', (req, res) => {
   }
   return res.status(200).json(jellyfinFullScanner.status());
 });
-settingsRoutes.get('/tautulli', (_req, res) => {
+settingsRoutes.get('/tautulli', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), (_req, res) => {
   const settings = getSettings();
 
   res.status(200).json(settings.tautulli);
 });
 
-settingsRoutes.post('/tautulli', async (req, res, next) => {
+settingsRoutes.post('/tautulli', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), async (req, res, next) => {
   const settings = getSettings();
 
   Object.assign(settings.tautulli, req.body);
@@ -716,7 +716,7 @@ settingsRoutes.get(
   }
 );
 
-settingsRoutes.get('/jobs', (_req, res) => {
+settingsRoutes.get('/jobs', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), (_req, res) => {
   return res.status(200).json(
     scheduledJobs.map((job) => ({
       id: job.id,
@@ -730,7 +730,7 @@ settingsRoutes.get('/jobs', (_req, res) => {
   );
 });
 
-settingsRoutes.post<{ jobId: string }>('/jobs/:jobId/run', (req, res, next) => {
+settingsRoutes.post<{ jobId: string }>('/jobs/:jobId/run', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), (req, res, next) => {
   const scheduledJob = scheduledJobs.find((job) => job.id === req.params.jobId);
 
   if (!scheduledJob) {
@@ -812,7 +812,7 @@ settingsRoutes.post<{ jobId: JobId }>(
   }
 );
 
-settingsRoutes.get('/cache', async (_req, res) => {
+settingsRoutes.get('/cache', isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), isAuthenticated(Permission.ADMIN), async (_req, res) => {
   const cacheManagerCaches = cacheManager.getAllCaches();
 
   const apiCaches = Object.values(cacheManagerCaches).map((cache) => ({
@@ -842,6 +842,7 @@ settingsRoutes.get('/cache', async (_req, res) => {
 
 settingsRoutes.post<{ cacheId: AvailableCacheIds }>(
   '/cache/:cacheId/flush',
+  isAuthenticated(Permission.ADMIN),
   (req, res, next) => {
     const cache = cacheManager.getCache(req.params.cacheId);
 

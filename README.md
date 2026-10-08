@@ -10,6 +10,7 @@
 <a href="https://hub.docker.com/r/seerr/seerr"><img src="https://img.shields.io/docker/pulls/seerr/seerr" alt="Docker pulls"></a>
 <a href="https://translate.seerr.dev/engage/seerr/"><img src="https://translate.seerr.dev/widget/seerr/svg-badge.svg" alt="Translation status" /></a>
 <a href="https://github.com/seerr-team/seerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/seerr-team/seerr"></a>
+</p>
 
 **Seerr** is a free and open source software application for managing requests for your media library. It integrates with the media server of your choice: [Jellyfin](https://jellyfin.org), [Plex](https://plex.tv), and [Emby](https://emby.media/). In addition, it integrates with your existing services, such as **[Sonarr](https://sonarr.tv/)**, **[Radarr](https://radarr.video/)**.
 
@@ -75,3 +76,21 @@ You can help improve Seerr too! Check out our [Contribution Guide](./CONTRIBUTIN
 
 [![Become a Backer](https://opencollective.com/seerr/backers.svg)](https://opencollective.com/seerr/#backers)
 [![Become a Sponsor](https://opencollective.com/seerr/sponsors.svg)](https://opencollective.com/seerr/#sponsors)
+
+## About This Fork
+
+This repository is a fork of the official Seerr project that includes important security improvements. For detailed information about the changes made in this fork, please refer to the [MEMORY.md](./MEMORY.md) and [FORK.md](./FORK.md) files.
+
+### Why This Fork Exists
+This fork was created to address missing permission checks on various administrative endpoints that could allow regular authenticated users to perform sensitive operations. The changes ensure that only users with administrative privileges can perform actions such as regenerating API keys, modifying network settings, controlling scheduled jobs, and managing media server integrations.
+
+### You Fork, You Support
+We follow the principle that if you fork a repository, you take responsibility for supporting that fork. This means:
+- Keeping your fork up to date with upstream changes if desired
+- Addressing issues that arise in your fork
+- Being transparent about differences from the upstream repository
+- Contributing back to upstream when possible
+
+In this case, the security improvements in this fork are intended to be contributed back to the upstream Seerr project via a pull request. Until those changes are merged, this fork provides a secure version for users who require these protections immediately.
+
+If you choose to use this fork, please review the documentation in MEMORY.md and FORK.md to understand the changes and your responsibilities as a fork maintainer.
