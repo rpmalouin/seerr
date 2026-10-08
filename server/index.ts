@@ -42,6 +42,10 @@ import express from 'express';
 import * as OpenApiValidator from 'express-openapi-validator';
 import type { Store } from 'express-session';
 import session from 'express-session';
+import bcrypt from 'bcrypt';
+import { Permission } from '@server/lib/permissions';
+import { UserType } from '@server/constants/user';
+import gravatarUrl from 'gravatar-url';
 import fs from 'fs/promises';
 import yaml from 'js-yaml';
 import next from 'next';
@@ -84,6 +88,27 @@ app
 
     // Load Settings
     const settings = await getSettings().load();
+    // Create admin user from environment variables if no users exist
+    const userRepository = getRepository(User);
+    const userCount = await userRepository.count();
+    if (userCount === 0 && process.env.ADMIN_EMAIL && process.env.ADMIN_PASSWORD) {
+      const adminEmail = process.env.ADMIN_EMAIL.trim();
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      // Hash the password
+      const saltRounds = 12;
+      const passwordHash = await bcrypt.hash(adminPassword, saltRounds);
+      // Determine username (part before @ or whole email if no @)
+      const username = adminEmail.includes('@') ? adminEmail.split('@')[0] : adminEmail;
+      const adminUser = new User();
+      adminUser.email = adminEmail;
+      adminUser.username = username;
+      adminUser.password = passwordHash;
+      adminUser.permissions = Permission.ADMIN; // 2
+      adminUser.userType = UserType.PLEX; // assuming Plex; could also fallback to LOCAL
+      adminUser.avatar = gravatarUrl(adminEmail, { default: 'mm', size: 200 });
+      await userRepository.save(adminUser);
+      logger.info(`Admin user created from environment variables: ${adminEmail}`);
+    }
     restartFlag.initializeSettings(settings);
 
     initI18n();
@@ -151,7 +176,6 @@ app
       new WebPushAgent(),
     ]);
 
-    const userRepository = getRepository(User);
     const totalUsers = await userRepository.count();
     if (totalUsers > 0) {
       startJobs();
